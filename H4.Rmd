@@ -1,0 +1,115 @@
+---
+title: 'Assignment #4'
+output: html_document
+date: "2023-10-05"
+---
+
+```{r}
+library(readxl)
+data <- read_excel("/Users/wangd07/Desktop/bike_data.xlsx")
+
+library(fpp)
+library(fpp2)
+library(TTR)
+
+install.packages("ggplot2")
+library(ggplot2)
+
+attributes(data)
+head(data)
+
+data <- data[order(as.Date(data$start_time, format="%Y-%m-%d")),]
+# take Mean of all available history
+mean_forecast <- mean(data$duration, na.rm = TRUE)
+
+duration <- as.factor(data$duration)
+
+plot(duration)
+Acf(duration)
+
+# Naive model
+naive_model <- naive(duration)
+plot(naive_model)
+
+# Seasonal Naive
+snaive_forecast <- snaive(duration,5)
+plot(snaive_forecast)
+```
+
+```{r}
+# Moving Averages
+
+ma5_model <- ma(duration, order=5)
+
+ma9_model <- ma(duration, order=9)
+
+# Double Moving Average
+holt <- holt(duration)
+
+# ES
+sesl <- ses(duration)
+
+# Holt-Winters' ES
+hw <- hw(duration)
+
+# take Mean of all available history
+mean_forecast <- mean(data$duration, na.rm = TRUE)
+
+# plot all in a single chart
+data$start_time <- as.Date(data$start_time, format="%Y-%m-%d")
+
+plot(data$start_time, data$duration, type='l')
+mean_forecast <- mean(data$duration, na.rm = TRUE)
+lines(data$start_time,naive_model$mean,col="red")
+lines(data$start_time,snaive_forecast$mean,col="black")
+lines(data$start_time,ma5_model,col="Pink")
+lines(data$start_time,ma9_model,col="Blue")
+
+
+```
+
+
+```{r}
+
+plot(motorbike_data$duration)
+table(motorbike_data$duration)
+table(motorbike_data$start_time)
+table(motorbike_data$start_time, motorbike_data$duration)
+memory.limit()
+
+plot(motorbike_data$end_time, motorbike_data$duration, type="l", xlab="End Time", ylab="Duration", main="Duration over End Time")
+
+barplot(motorbike_data$end_time,motorbike_data$duration,main = "Duration of end time", xlab = "End_time", ylab = "Duration", col = "Blue", names.arg = motorbike_data$end_time)
+
+```
+
+### Naive Method
+
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
